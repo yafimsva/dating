@@ -1,0 +1,12 @@
+{
+  "name": "yvainilo/328/dating",
+  "authors": [
+    {
+      "name": "Yafim Vainilovich",
+      "email": "yvainilovich@mail.greenriver.edu"
+    }
+  ],
+  "require": {
+    "bcosca/fatfree-core": "dev-master"
+  }
+}
