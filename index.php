@@ -20,14 +20,28 @@ $f3->route('GET /', function() {
     echo $view->render('views/home.html');
 });
 
+//register route
 $f3->route('GET /register', function() {
     $view = new View;
     echo $view->render('views/register.html');
 });
 
+//profile route
 $f3->route('GET /profile', function() {
     $view = new View;
     echo $view->render('views/profile.html');
+});
+
+//interests route
+$f3->route('GET /interests', function() {
+    $view = new View;
+    echo $view->render('views/interests.html');
+});
+
+//summary route
+$f3->route('GET /summary', function() {
+    $view = new View;
+    echo $view->render('views/summary.html');
 });
 
 //Run fat free
