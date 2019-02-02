@@ -25,5 +25,10 @@ $f3->route('GET /register', function() {
     echo $view->render('views/register.html');
 });
 
+$f3->route('GET /profile', function() {
+    $view = new View;
+    echo $view->render('views/profile.html');
+});
+
 //Run fat free
 $f3->run();
