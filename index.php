@@ -20,5 +20,10 @@ $f3->route('GET /', function() {
     echo $view->render('views/home.html');
 });
 
+$f3->route('GET /register', function() {
+    $view = new View;
+    echo $view->render('views/register.html');
+});
+
 //Run fat free
 $f3->run();
