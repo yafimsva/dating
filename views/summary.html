@@ -19,28 +19,28 @@
 
       <table class="table table-bordered table-hover">
           <tr>
-            <td>Name: </td>
+            <td>Name: {{ @SESSION['firstName'] }} {{ @SESSION['lastName'] }} </td>
           </tr>
           <tr>
-            <td>Gender:</td>
+            <td>Gender: {{ @SESSION['gender'] }} </td>
           </tr>
           <tr>
-            <td>Age:</td>
+            <td>Age: {{ @SESSION['age'] }}</td>
           </tr>
           <tr>
-            <td>Phone: </td>
+            <td>Phone: {{ @SESSION['phone'] }}</td>
           </tr>
           <tr>
-            <td>Email:</td>
+            <td>Email: {{@SESSION['email']}} </td>
           </tr>
           <tr>
-            <td>State:</td>
+            <td>State: {{ @SESSION['state'] }}</td>
           </tr>
           <tr>
-            <td>Seeking: </td>
+            <td>Seeking: {{ @SESSION['seeking'] }} </td>
           </tr>
           <tr>
-            <td>Interests:</td>
+            <td>Interests: {{ implode(", ", @SESSION['inDoor']) }}, {{ implode(", ", @SESSION['outDoor']) }}</td>
           </tr>
 
       </table>
@@ -49,13 +49,13 @@
 
     <!-- Image that is on the right side -->
         <div class="col-sm-5 float-right">
-            <img src="../images/profile.png" class="img-fluid rounded" style="max-height: 400px" alt="profile">
+            <img src="images/profile.png" class="img-fluid rounded" style="max-height: 400px" alt="profile">
         </div>
 
     <div class="col-sm-5 float-right" role="textbox" >
         <br>
             <h6>Bibliography</h6>
-        <textarea class="form-control" rows="6" id="bibliography">fasdfas asdfa df</textarea>
+        <textarea readonly class="form-control" id="bibliography">{{ @SESSION['bib'] }}</textarea>
         <br>
 
     </div>
