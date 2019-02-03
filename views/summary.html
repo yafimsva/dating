@@ -13,6 +13,18 @@
 
 <div class="p-4">
 
+<!-- Image that is on the right side -->
+    <div class="col-sm-5 float-right">
+        <img src="images/profile.png" class="img-fluid rounded" style="max-height: 400px" alt="profile">
+        <br>
+        <br>
+        <h6 class="pt-4">Bibliography</h6>
+
+        <textarea readonly class="form-control" class="img-fluid" style="max-width: 400px"  id="bibliography">{{ @SESSION['bib'] }}</textarea>
+        <br>
+
+    </div>
+
 
 
     <div class="col-sm-6 float-left">
@@ -45,26 +57,19 @@
 
       </table>
 
-    </div>
-
-    <!-- Image that is on the right side -->
-        <div class="col-sm-5 float-right">
-            <img src="images/profile.png" class="img-fluid rounded" style="max-height: 400px" alt="profile">
-        </div>
-
-    <div class="col-sm-5 float-right" role="textbox" >
-        <br>
-            <h6>Bibliography</h6>
-        <textarea readonly class="form-control" id="bibliography">{{ @SESSION['bib'] }}</textarea>
-        <br>
-
-    </div>
-
-    <!-- Bootstrap button -->
+<!-- Bootstrap button -->
     <div class="text-center">
-
         <a href="" class="btn btn-primary rounded " >Contact Me!</a>
     </div>
+
+    </div>
+
+
+
+
+    </div>
+
+
 
 </div>
 
