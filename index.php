@@ -53,7 +53,7 @@ $f3->route('GET|POST /register', function($f3) {
     }
 
     $template = new Template();
-    echo $template->render('views/register.html');
+    echo $template->render('views/personal-information.html');
 });
 
 //profile route
