@@ -36,8 +36,8 @@
      <div class="form-group col-md-6">
           <label><strong>State</strong></label>
           <select name="state" id="state" class="form-check form-control" required>
+            <option>Choose...</option>
             <repeat group="{{ @states }}" value="{{ @state }}">
-                <option>Choose...</option>
                 <option value="{{ @state}}">{{ @state }}</option>
             </repeat>
           </select>
