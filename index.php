@@ -40,25 +40,26 @@ $f3->route('GET /', function() {
 
 //register route
 $f3->route('GET|POST /register', function($f3) {
+    print_r($_SESSION['member']);
 
     if(!empty($_POST)) {
 
-        $fname = $_POST['fname'];
-        $lname = $_POST['lname'];
+        $firstName = $_POST['firstName'];
+        $lastName = $_POST['lastName'];
         $age = $_POST['age'];
         $gender = $_POST['gender'];
-        $tel = $_POST['tel'];
+        $phone= $_POST['phone'];
 
         if (isset($_POST['premium']))
         {
             $_SESSION['premium'] = true;
-            $premiumMember = new PremiumMember($fname, $lname, $age, $gender, $tel);
+            $premiumMember = new PremiumMember($firstName, $lastName, $age, $gender, $phone);
             $_SESSION['member'] = $premiumMember;
             $f3->reroute('/profile');
         }
         else
         {
-            $member = new Member($fname, $lname, $age, $gender, $tel);
+            $member = new Member($firstName, $lastName, $age, $gender, $phone);
             $_SESSION['member'] = $member;
             $f3->reroute('/profile');
         }
@@ -70,6 +71,8 @@ $f3->route('GET|POST /register', function($f3) {
 
 //profile route
 $f3->route('GET|POST /profile', function($f3) {
+    print_r($_SESSION['member']);
+
 
     if(!empty($_POST)) {
         $member = $_SESSION['member'];
@@ -83,18 +86,17 @@ $f3->route('GET|POST /profile', function($f3) {
         $seeking = $_POST['seeking'];
         $member->setSeeking($seeking);
 
-        $biography = $_POST['biography'];
-        $member->setBio($biography);
+        $bib = $_POST['bib'];
+        $member->setBio($bib);
 
         $_SESSION['member'] = $member;
-        if ($_SESSION['premium'] == true)
-        {
+
+        if ($_SESSION['premium'] == true) {
             $f3->reroute('/interests');
-        }
-        else
-        {
+        } else {
             $f3->reroute('/summary');
         }
+    }
 
     $template = new Template();
     echo $template->render('views/profile.html');
@@ -102,14 +104,23 @@ $f3->route('GET|POST /profile', function($f3) {
 
 //interests route
 $f3->route('GET|POST /interests', function($f3) {
-    $_SESSION['inDoor'] = $_POST['inDoor'];
-    $_SESSION['outDoor'] = $_POST['outDoor'];
+    print_r($_SESSION['member']);
 
 
-    if (isset($_SESSION['inDoor']) and isset($_SESSION['outDoor']))
-    {
-        $f3->reroute('/summary');
-    }
+    $member = $_SESSION['member'];
+
+        $inDoor = $_POST['inDoor'];
+        $outDoor = $_POST['outDoor'];
+
+        if (isset($inDoor) and isset($outDoor))
+        {
+            $member->setInDoorInterests($inDoor);
+            $member->setOutDoorInterests($outDoor);
+            $f3->reroute('/summary');
+        }
+
+        $_SESSION['member'] = $member;
+
 
     $template = new Template();
     echo $template->render('views/interests.html');
@@ -117,6 +128,31 @@ $f3->route('GET|POST /interests', function($f3) {
 
 //summary route
 $f3->route('GET|POST /summary', function($f3) {
+    print_r($_SESSION['member']);
+
+
+    $member = $_SESSION['member'];
+
+    $f3->set('firstName', $member->getFname());
+    $f3->set('lastName', $member->getLname());
+    $f3->set('gender', $member->getGender());
+    $f3->set('age', $member->getAge());
+    $f3->set('phone', $member->getPhone());
+    $f3->set('email', $member->getEmail());
+    $f3->set('state', $member->getState());
+    $f3->set('seeking', $member->getSeeking());
+    $f3->set('bib', $member->getBio());
+    if($_SESSION['premium'] == true)
+    {
+        $f3->set('inInterests', $member->getInDoorInterests());
+        $f3->set('outInterests', $member->getOutDoorInterests());
+    }
+    else
+    {
+        $f3->set('inInterests', array());
+        $f3->set('outInterests', array());
+    }
+
 
     $template = new Template();
     echo $template->render('views/summary.html');
