@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 //Turn on error reporting
 
 ini_set('display_errors', 1);
@@ -10,6 +8,7 @@ error_reporting(E_ALL);
 //Require autoload
 require_once ('vendor/autoload.php');
 
+session_start();
 
 //Create an instance of the Base class
 $f3 = Base::instance();
@@ -41,15 +40,28 @@ $f3->route('GET /', function() {
 
 //register route
 $f3->route('GET|POST /register', function($f3) {
-    $_SESSION['firstName'] = $_POST['firstName'];
-    $_SESSION['lastName'] = $_POST['lastName'];
-    $_SESSION['age'] = $_POST['age'];
-    $_SESSION['gender'] = $_POST['gender'];
-    $_SESSION['phone'] = $_POST['phone'];
 
-    if (($_SESSION['firstName']) != "" )
-    {
-        $f3->reroute('/profile');
+    if(!empty($_POST)) {
+
+        $fname = $_POST['fname'];
+        $lname = $_POST['lname'];
+        $age = $_POST['age'];
+        $gender = $_POST['gender'];
+        $tel = $_POST['tel'];
+
+        if (isset($_POST['premium']))
+        {
+            $_SESSION['premium'] = true;
+            $premiumMember = new PremiumMember($fname, $lname, $age, $gender, $tel);
+            $_SESSION['member'] = $premiumMember;
+            $f3->reroute('/profile');
+        }
+        else
+        {
+            $member = new Member($fname, $lname, $age, $gender, $tel);
+            $_SESSION['member'] = $member;
+            $f3->reroute('/profile');
+        }
     }
 
     $template = new Template();
