@@ -71,17 +71,30 @@ $f3->route('GET|POST /register', function($f3) {
 //profile route
 $f3->route('GET|POST /profile', function($f3) {
 
-    $_SESSION['email'] = $_POST['email'];
-    $_SESSION['bib'] = $_POST['bib'];
-    $_SESSION['state'] = $_POST['state'];
-    $_SESSION['seeking'] = $_POST['seeking'];
+    if(!empty($_POST)) {
+        $member = $_SESSION['member'];
 
+        $email = $_POST['email'];
+        $member->setEmail($email);
 
+        $state = $_POST['state'];
+        $member->setState($state);
 
-    if (isset($_SESSION['email']))
-    {
-        $f3->reroute('/interests');
-    }
+        $seeking = $_POST['seeking'];
+        $member->setSeeking($seeking);
+
+        $biography = $_POST['biography'];
+        $member->setBio($biography);
+
+        $_SESSION['member'] = $member;
+        if ($_SESSION['premium'] == true)
+        {
+            $f3->reroute('/interests');
+        }
+        else
+        {
+            $f3->reroute('/summary');
+        }
 
     $template = new Template();
     echo $template->render('views/profile.html');
