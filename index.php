@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 //Require autoload
-require_once ('vendor/autoload.php');
+require_once('vendor/autoload.php');
 
 session_start();
 
@@ -31,7 +31,7 @@ require_once('model/validation-functions.php');
 
 
 //Define a default route
-$f3->route('GET /', function() {
+$f3->route('GET /', function () {
 
     $_SESSION = array();
     $view = new View;
@@ -39,26 +39,22 @@ $f3->route('GET /', function() {
 });
 
 //register route
-$f3->route('GET|POST /register', function($f3) {
-    print_r($_SESSION['member']);
+$f3->route('GET|POST /register', function ($f3) {
 
-    if(!empty($_POST)) {
+    if (!empty($_POST)) {
 
         $firstName = $_POST['firstName'];
         $lastName = $_POST['lastName'];
         $age = $_POST['age'];
         $gender = $_POST['gender'];
-        $phone= $_POST['phone'];
+        $phone = $_POST['phone'];
 
-        if (isset($_POST['premium']))
-        {
+        if (isset($_POST['premium'])) {
             $_SESSION['premium'] = true;
             $premiumMember = new PremiumMember($firstName, $lastName, $age, $gender, $phone);
             $_SESSION['member'] = $premiumMember;
             $f3->reroute('/profile');
-        }
-        else
-        {
+        } else {
             $member = new Member($firstName, $lastName, $age, $gender, $phone);
             $_SESSION['member'] = $member;
             $f3->reroute('/profile');
@@ -70,11 +66,10 @@ $f3->route('GET|POST /register', function($f3) {
 });
 
 //profile route
-$f3->route('GET|POST /profile', function($f3) {
-    print_r($_SESSION['member']);
+$f3->route('GET|POST /profile', function ($f3) {
 
-
-    if(!empty($_POST)) {
+    if (!empty($_POST))
+    {
         $member = $_SESSION['member'];
 
         $email = $_POST['email'];
@@ -91,9 +86,12 @@ $f3->route('GET|POST /profile', function($f3) {
 
         $_SESSION['member'] = $member;
 
-        if ($_SESSION['premium'] == true) {
+        if ($_SESSION['premium'] == true)
+        {
             $f3->reroute('/interests');
-        } else {
+        }
+        else
+        {
             $f3->reroute('/summary');
         }
     }
@@ -103,33 +101,28 @@ $f3->route('GET|POST /profile', function($f3) {
 });
 
 //interests route
-$f3->route('GET|POST /interests', function($f3) {
-    print_r($_SESSION['member']);
-
+$f3->route('GET|POST /interests', function ($f3) {
 
     $member = $_SESSION['member'];
 
-        $inDoor = $_POST['inDoor'];
-        $outDoor = $_POST['outDoor'];
+    $inDoor = $_POST['inDoor'];
+    $outDoor = $_POST['outDoor'];
 
-        if (isset($inDoor) and isset($outDoor))
-        {
-            $member->setInDoorInterests($inDoor);
-            $member->setOutDoorInterests($outDoor);
-            $f3->reroute('/summary');
-        }
+    if (isset($inDoor) and isset($outDoor))
+    {
+        $member->setInDoorInterests($inDoor);
+        $member->setOutDoorInterests($outDoor);
+        $f3->reroute('/summary');
+    }
 
-        $_SESSION['member'] = $member;
-
+    $_SESSION['member'] = $member;
 
     $template = new Template();
     echo $template->render('views/interests.html');
 });
 
 //summary route
-$f3->route('GET|POST /summary', function($f3) {
-    print_r($_SESSION['member']);
-
+$f3->route('GET|POST /summary', function ($f3) {
 
     $member = $_SESSION['member'];
 
@@ -142,7 +135,8 @@ $f3->route('GET|POST /summary', function($f3) {
     $f3->set('state', $member->getState());
     $f3->set('seeking', $member->getSeeking());
     $f3->set('bib', $member->getBio());
-    if($_SESSION['premium'] == true)
+
+    if ($_SESSION['premium'] == true)
     {
         $f3->set('inInterests', $member->getInDoorInterests());
         $f3->set('outInterests', $member->getOutDoorInterests());
@@ -153,11 +147,8 @@ $f3->route('GET|POST /summary', function($f3) {
         $f3->set('outInterests', array());
     }
 
-
     $template = new Template();
     echo $template->render('views/summary.html');
-
-
 });
 
 //Run fat free
