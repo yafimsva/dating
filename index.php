@@ -158,8 +158,8 @@ $f3->route('GET|POST /summary', function ($f3) {
     }
     else
     {
-        $f3->set('inInterests', array());
-        $f3->set('outInterests', array());
+        $f3->set('inInterests', "");
+        $f3->set('outInterests', "");
 
         //inserting into database for non premium
         insertMember($member->getFname(), $member->getLname(), $member->getAge(), $member->getGender(),
@@ -167,10 +167,16 @@ $f3->route('GET|POST /summary', function ($f3) {
             $member->getBio(), 0, null, null);
 
     }
-
-
     $template = new Template();
     echo $template->render('views/summary.html');
+});
+
+//admin route
+$f3->route('GET|POST /admin', function ($f3) {
+    $members = getMembers();
+    $f3->set('members', $members);
+    $view = new Template();
+    echo $view->render('views/admin.html');
 });
 
 //Run fat free
