@@ -10,6 +10,13 @@ require_once('vendor/autoload.php');
 
 session_start();
 
+//Database
+require_once ('model/Database.php');
+$dbh = connect();
+
+
+
+
 //Create an instance of the Base class
 $f3 = Base::instance();
 $f3->set('states', array("Alabama", "Alaska", "Arizona", "Arkansas",
@@ -138,14 +145,29 @@ $f3->route('GET|POST /summary', function ($f3) {
 
     if ($_SESSION['premium'] == true)
     {
-        $f3->set('inInterests', $member->getInDoorInterests());
-        $f3->set('outInterests', $member->getOutDoorInterests());
+        $inInterests = implode(", ", $member->getInDoorInterests());
+        $outInterests = implode(", ", $member->getOutDoorInterests());
+
+        $f3->set('inInterests', $inInterests);
+        $f3->set('outInterests', $outInterests);
+
+        //inserting into database for premium
+        insertMember($member->getFname(), $member->getLname(), $member->getAge(), $member->getGender(),
+            $member->getPhone(), $member->getEmail(), $member->getState(), $member->getSeeking(),
+            $member->getBio(), 1, null, $inInterests . ", " . $outInterests);
     }
     else
     {
         $f3->set('inInterests', array());
         $f3->set('outInterests', array());
+
+        //inserting into database for non premium
+        insertMember($member->getFname(), $member->getLname(), $member->getAge(), $member->getGender(),
+            $member->getPhone(), $member->getEmail(), $member->getState(), $member->getSeeking(),
+            $member->getBio(), 0, null, null);
+
     }
+
 
     $template = new Template();
     echo $template->render('views/summary.html');
