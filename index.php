@@ -171,12 +171,32 @@ $f3->route('GET|POST /summary', function ($f3) {
     echo $template->render('views/summary.html');
 });
 
-//admin route
+//admin log in route
 $f3->route('GET|POST /admin', function ($f3) {
-    $members = getMembers();
-    $f3->set('members', $members);
     $view = new Template();
-    echo $view->render('views/admin.html');
+    echo $view->render('views/adminLogIn.html');
+
+    if (($_POST['user']) == "admin" && $_POST['password'] == "admin" )  {
+        $_SESSION['pass'] = true;
+        $f3->reroute('/users');
+    }
+});
+
+//users in route
+$f3->route('GET|POST /users', function ($f3) {
+    if ($_SESSION['pass'])
+    {
+        $members = getMembers();
+        $f3->set('members', $members);
+        $view = new Template();
+        echo $view->render('views/admin.html');
+        $_SESSION['pass'] = false;
+    }
+    else {
+        $f3->reroute('/admin');
+
+    }
+
 });
 
 //Display each member
