@@ -179,5 +179,13 @@ $f3->route('GET|POST /admin', function ($f3) {
     echo $view->render('views/admin.html');
 });
 
+//Display each member
+$f3->route('GET|POST /member@memId', function($f3, $params) {
+    $member=getMember($params['memId']);
+    $f3->set('member', $member['0']);
+    $view = new Template();
+    echo $view->render('views/members.html');
+});
+
 //Run fat free
 $f3->run();
