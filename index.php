@@ -10,15 +10,13 @@ require_once('vendor/autoload.php');
 
 session_start();
 
-//Database
-require_once ('model/Database.php');
-$dbh = connect();
-
-
-
+$database = new Database();
+$_SESSION['database'] = $database;
+$dbh = $database->connect();
 
 //Create an instance of the Base class
 $f3 = Base::instance();
+
 $f3->set('states', array("Alabama", "Alaska", "Arizona", "Arkansas",
     "California", "Colorado", "Connecticut", "Delaware", "Florida",
     "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
@@ -32,10 +30,6 @@ $f3->set('states', array("Alabama", "Alaska", "Arizona", "Arkansas",
 
 //Turn of Fat-Free error reporting
 $f3->set('DEBUG', 3);
-
-//Validation file
-require_once('model/validation-functions.php');
-
 
 //Define a default route
 $f3->route('GET /', function () {
@@ -132,6 +126,7 @@ $f3->route('GET|POST /interests', function ($f3) {
 $f3->route('GET|POST /summary', function ($f3) {
 
     $member = $_SESSION['member'];
+    $database = $_SESSION['database'];
 
     $f3->set('firstName', $member->getFname());
     $f3->set('lastName', $member->getLname());
@@ -146,13 +141,13 @@ $f3->route('GET|POST /summary', function ($f3) {
     if ($_SESSION['premium'] == true)
     {
         $inInterests = implode(", ", $member->getInDoorInterests());
-        $outInterests = implode(", ", $member->getOutDoorInterests());
+        $outInterests = ", " . implode(", ", $member->getOutDoorInterests());
 
         $f3->set('inInterests', $inInterests);
         $f3->set('outInterests', $outInterests);
 
         //inserting into database for premium
-        insertMember($member->getFname(), $member->getLname(), $member->getAge(), $member->getGender(),
+        $database->insertMember($member->getFname(), $member->getLname(), $member->getAge(), $member->getGender(),
             $member->getPhone(), $member->getEmail(), $member->getState(), $member->getSeeking(),
             $member->getBio(), 1, null, $inInterests . ", " . $outInterests);
     }
@@ -162,7 +157,7 @@ $f3->route('GET|POST /summary', function ($f3) {
         $f3->set('outInterests', "");
 
         //inserting into database for non premium
-        insertMember($member->getFname(), $member->getLname(), $member->getAge(), $member->getGender(),
+        $database->insertMember($member->getFname(), $member->getLname(), $member->getAge(), $member->getGender(),
             $member->getPhone(), $member->getEmail(), $member->getState(), $member->getSeeking(),
             $member->getBio(), 0, null, null);
 
@@ -186,7 +181,8 @@ $f3->route('GET|POST /admin', function ($f3) {
 $f3->route('GET|POST /users', function ($f3) {
     if ($_SESSION['pass'])
     {
-        $members = getMembers();
+        $database = $_SESSION['database'];
+        $members = $database->getMembers();
         $f3->set('members', $members);
         $view = new Template();
         echo $view->render('views/admin.html');
@@ -201,7 +197,9 @@ $f3->route('GET|POST /users', function ($f3) {
 
 //Display each member
 $f3->route('GET|POST /member@memId', function($f3, $params) {
-    $member=getMember($params['memId']);
+    $database = $_SESSION['database'];
+
+    $member=$database->getMember($params['memId']);
     $f3->set('member', $member['0']);
     $view = new Template();
     echo $view->render('views/members.html');
